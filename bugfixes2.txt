@@ -1,0 +1,9 @@
+Changes made in Gameboard.py
+1. Removed line 1 that imported db
+
+Changes made in app.py
+1. Removed redirect which was being imported in line 1
+2. Commented line 2
+3. Removed line 4 which was importing response from werkzeug.wrappers
+4. Removed line 6 that imported db
+5. Shifted the line that imported logging to top of the file
