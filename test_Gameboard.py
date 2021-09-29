@@ -98,6 +98,3 @@ class Test_TestGameboard(unittest.TestCase):
         player_name = 'p2'
         self.assertEqual(game.happyMove(player_name, pos), True)
 
-
-if __name__ == '__main__':
-    unittest.main()
