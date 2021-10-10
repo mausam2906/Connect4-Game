@@ -32,7 +32,22 @@ Insert Tuple into table
 
 
 def add_move(move):  # will take in a tuple
-    pass
+    conn = None
+    try:
+        conn = sqlite3.connect('sqlite_db')
+        cur = conn.cursor()
+        print(move)
+        cur.execute('INSERT INTO GAME VALUES (?, ?, ?, ?, ?, ?)', move)
+        conn.commit()
+        print('Data entered successfully')
+        return True
+    except Error as e:
+        print(e)
+        return False
+
+    finally:
+        if conn:
+            conn.close()
 
 
 '''
@@ -44,7 +59,18 @@ return (current_turn, board, winner, player1, player2, remaining_moves)
 def getMove():
     # will return tuple(current_turn, board, winner, player1, player2,
     # remaining_moves) or None if db fails
-    pass
+    conn = None
+    try:
+        conn = sqlite3.connect('sqlite_db')
+        cur = conn.cursor()
+        query = cur.execute('SELECT * FROM GAME WHERE '
+                            'remaining_moves=(SELECT MIN(remaining_moves) '
+                            'FROM GAME)')
+        res = query.fetchone()
+        print('Data fetched successfully: ', res)
+        return res
+    except Error as e:
+        print(e)
 
 
 '''
@@ -61,6 +87,26 @@ def clear():
         print('Database Cleared')
     except Error as e:
         print(e)
+
+    finally:
+        if conn:
+            conn.close()
+
+
+# Checks if database is emptyy
+def isEmpty():
+    conn = None
+    try:
+        conn = sqlite3.connect('sqlite_db')
+        cur = conn.cursor()
+        query = cur.execute('SELECT * FROM GAME')
+        exist = query.fetchone()
+        if exist is None:
+            return True
+        return False
+    except Error as e:
+        print(e)
+        return False
 
     finally:
         if conn:

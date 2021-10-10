@@ -1,3 +1,4 @@
+import db
 
 
 class Gameboard():
@@ -6,7 +7,7 @@ class Gameboard():
         self.player2 = ""
         self.board = [[0 for x in range(7)] for y in range(6)]
         self.game_result = ""
-        self.current_turn = 'p1'
+        self.current_turn = "p1"
         self.remaining_moves = 42
         self.positions = [5]*7
 
@@ -79,6 +80,7 @@ class Gameboard():
     # Checks if it is a draw
     def isDraw(self):
         if self.remaining_moves == 0:
+            db.clear()
             return True
         return False
 
@@ -100,4 +102,17 @@ class Gameboard():
             self.current_turn = 'p2'
         else:
             self.current_turn = 'p1'
+        move = [self.current_turn, str(self.board), self.game_result,
+                self.player1, self.player2, self.remaining_moves]
+        db.add_move(move)
         return True
+
+    # def lastMove(self):
+    #     move = db.getMove()
+    #     if move is not None and len(move) != 0:
+    #         self.current_turn = move[0]
+    #         self.board = list(move[1])
+    #         self.game_result = move[2]
+    #         self.player1 = move[3]
+    #         self.player2 = move[4]
+    #         self.remaining_moves = move[5]

@@ -3,14 +3,13 @@ from flask import Flask, render_template, request, jsonify
 import json
 from Gameboard import Gameboard
 import logging
+import db
+import ast
 
 app = Flask(__name__)
-
-
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
-
-game = None
+game = Gameboard()
 
 '''
 Implement '/' endpoint
@@ -22,6 +21,8 @@ Initial Webpage where gameboard is initialized
 
 @app.route('/', methods=['GET'])
 def player1_connect():
+    db.clear()
+    db.init_db()
     global game
     game = Gameboard()
     return render_template("player1_connect.html", status="Pick a Color.")
@@ -51,13 +52,36 @@ Assign player1 their color
 
 @app.route('/p1Color', methods=['GET'])
 def player1_config():
-    game.player1 = request.args['color']
+    move = db.getMove()
+    if move is not None:
+        board = list(ast.literal_eval(move[1]))
+        print(board)
+        game.player1 = move[3]
+        game.player2 = move[4]
+        game.board = board
+        game.game_result = move[2]
+        for i in range(len(board[0])):
+            col = 0
+            for j in range(len(board)):
+                if board[j][i] != 0:
+                    col += 1
+            game.positions[i] = 5-col
+        game.current_turn = move[0]
+        game.remaining_moves = move[5]
+        return render_template("player1_connect.html", status=game.player1)
+    color = request.args.get('color')
+    game.player1 = color
     if game.player1 == "red":
         game.player2 = "yellow"
     else:
         game.player2 = "red"
-    # game.player1=response.header.color
-    return render_template("player1_connect.html", status=game.player1)
+    # if game.player1 == "" or game.player2 == "":
+    #     game.player1 = request.args['color']
+    #     if game.player1 == "red":
+    #         game.player2 = "yellow"
+    #     else:
+    #         game.player2 = "red"
+    return render_template("player1_connect.html", status=color)
     pass
 
 
@@ -73,13 +97,48 @@ Assign player2 their color
 
 @app.route('/p2Join', methods=['GET'])
 def p2Join():
-    if game.player1 != "":
-        status = game.player2
-    else:
-        status = "Error: P1 didn't pick a color"
 
-    return render_template("p2Join.html", status=status)
-    pass
+    move = db.getMove()
+    print("This is p2join")
+    print(move)
+    if move is not None:
+        board = list(ast.literal_eval(move[1]))
+        print(board)
+        game.player1 = move[3]
+        game.player2 = move[4]
+        game.board = board
+        game.game_result = move[2]
+        game.current_turn = move[0]
+        for i in range(len(board[0])):
+            col = 0
+            for j in range(len(board)):
+                if board[j][i] != 0:
+                    col += 1
+            game.positions[i] = 5-col
+
+        game.remaining_moves = move[5]
+        # return render_template("p2Join.html", status=game.player2)
+    if game.player1 == "":
+        return render_template("p2Join.html",
+                               status="Error: P1 didn't pick a color")
+    return render_template("p2Join.html", status=game.player2)
+
+    # db.getMove()
+    # if game.player1 == "":
+    #     status = "Error: P1 didn't pick a color"
+    #     return render_template("p2Join.html", status=status)
+    # elif game.player1 == "red":
+    #     game.player2 = "yellow"
+    #     return render_template("p2Join.html", status="yellow")
+    # else:
+    #     game.player2 = "red"
+    #     return render_template("p2Join.html", status="red")
+    # if game.player1 == "":
+    #     status = game.player2
+    # else:
+    #     status = "Error: P1 didn't pick a color"
+    # return render_template("p2Join.html", status=status)
+    # pass
 
 
 '''
@@ -110,6 +169,7 @@ def p1_move():
                        winner="")
 
     pos = int(json.loads(request.data.decode('UTF-8'))['column'][-1])-1
+    print(pos)
     if game.isCurrentColumnFilled(pos):
         return jsonify(move=game.board, invalid=True,
                        reason="No space left in this column", winner="")

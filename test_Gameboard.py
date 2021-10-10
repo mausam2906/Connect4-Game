@@ -97,4 +97,3 @@ class Test_TestGameboard(unittest.TestCase):
         self.assertEqual(game.happyMove(player_name, pos), True)
         player_name = 'p2'
         self.assertEqual(game.happyMove(player_name, pos), True)
-
