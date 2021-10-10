@@ -1,12 +1,13 @@
 Connect4 Game </br>
 UNI - msa2213 </br>
-Youtube link - https://www.youtube.com/watch?v=pqYgvHq-RQ4 </br>
+Youtube link - https://www.youtube.com/watch?v=C4zKT4xShpY </br>
 </br>
 Run the app: </br>
 python3 app.py </br>
 </br>
 Run tests: </br>
 python3 test_Gameboard.py </br>
+python3 test_db.py </br>
 </br>
 Run Coverage test: </br>
 coverage run -m unittest discover </br>
