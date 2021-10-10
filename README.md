@@ -1,6 +1,6 @@
 Connect4 Game </br>
 UNI - msa2213 </br>
-Youtube link - https://youtu.be/uR7y_v4Xse8 </br>
+Youtube link - https://www.youtube.com/watch?v=z48tRBRgFJk </br>
 </br>
 Run the app: </br>
 python3 app.py </br>
