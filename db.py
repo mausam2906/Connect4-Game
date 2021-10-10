@@ -92,22 +92,3 @@ def clear():
         if conn:
             conn.close()
 
-
-# Checks if database is emptyy
-def isEmpty():
-    conn = None
-    try:
-        conn = sqlite3.connect('sqlite_db')
-        cur = conn.cursor()
-        query = cur.execute('SELECT * FROM GAME')
-        exist = query.fetchone()
-        if exist is None:
-            return True
-        return False
-    except Error as e:
-        print(e)
-        return False
-
-    finally:
-        if conn:
-            conn.close()
